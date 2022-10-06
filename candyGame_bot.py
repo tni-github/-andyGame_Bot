@@ -32,7 +32,7 @@ NO_KEY = 'Нет, с меня хватит!'
 # функция обратного вызова точки входа в разговор
 
 
-def start(update, _):
+def start(update, context):
     # Список кнопок для ответа
     reply_keyboard = [[READY], [RUN_AWAY]]
     # Создаем простую клавиатуру для ответа
@@ -44,17 +44,21 @@ def start(update, _):
         'Команда /stop, чтобы прекратить игру.\n\n'
         'Готовы играть?',
         reply_markup=markup_key)
+    context.bot.send_sticker(update.effective_chat.id,
+                             'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
     # переходим к этапу `GAME`
     return GAME
 
 
-def game(update, _):
+def game(update, context):
     # определяем пользователя
     user = update.message.from_user
     key = update.message.text
     logger.info("Имя пользователя - Готовность играть: %s - %s",
                 user.first_name, update.message.text)
     if key == READY:
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJYmM_AAGr5dzxmzhrlAUwaYEkp1vSswACmgAD9wLID9HVBvL9etQ4KgQ')
         update.message.reply_text(
             'Отлично, тогда начнем!',
             reply_markup=ReplyKeyboardRemove())
@@ -64,10 +68,14 @@ def game(update, _):
     # переходим к этапу CALC_GAME
         return TOTAL_CANDY
     elif key == RUN_AWAY:
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJX2M_AAF2ecglXLM2wOmrFUruFCPONwACPQEAAjDUnREQ98oHcZKP7ioE')
         logger.info("Пользователь %s прекратил диалог.", user.first_name)
         update.message.reply_text(
             'Жаль! Возвращайтесь (кнопка /start), буду рад!',
             reply_markup=ReplyKeyboardRemove())
+        # context.bot.send_sticker(update.effective_chat.id,
+        #                          'CAACAgIAAxkBAAIJX2M_AAF2ecglXLM2wOmrFUruFCPONwACPQEAAjDUnREQ98oHcZKP7ioE')
         return ConversationHandler.END
 
 
@@ -84,6 +92,8 @@ def sum_total(update, context):
             'Вы ввели некорректное число конфет. Введите целое число не менее 10.\n'
             'Отправьте /stop, если передумали играть, но в этом случае я расстроюсь.\n'
         )
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJZWM_AAHiUqDMmRvQyMOca102OwNqGAACSgADUomRIyleaTHC6cM1KgQ')
         return TOTAL_CANDY
     else:
         sum_total = int(sum_total)
@@ -92,6 +102,8 @@ def sum_total(update, context):
             'Введите максимальное число конфет, которое можно брать за один ход игрока (более 1, целое положительное, не более трети общего числа конфет).\n'
             'Отправьте /stop, если передумали играть, но в этом случае я расстроюсь.\n'
         )
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
     return GAME_MOVE
 
 # Обрабатываем фотографию пользователя
@@ -114,6 +126,8 @@ def game_move(update, context):
             'Введите целое число более 1.\n'
             'Отправьте /stop, если передумали играть, но в этом случае я расстроюсь.\n'
         )
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJZWM_AAHiUqDMmRvQyMOca102OwNqGAACSgADUomRIyleaTHC6cM1KgQ')
         return GAME_MOVE
     elif int(game_move) > int(sum_total/3):
         update.message.reply_text(
@@ -121,6 +135,8 @@ def game_move(update, context):
             'Введите число поменьше.\n'
             'Отправьте /stop, если передумали играть, но в этом случае я расстроюсь.\n'
         )
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
         return GAME_MOVE
     else:
         game_move = int(game_move)
@@ -130,6 +146,8 @@ def game_move(update, context):
             'Внимание! Барабанная дробь...Сейчас станет известно, кто ходит первым...\n'
             'Отправьте /stop, если передумали играть, но в этом случае я расстроюсь.\n'
         )
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJbmM_AZy5_Tr12wsHYd9i-JL0qQbdAAIjAAMoD2oUJ1El54wgpAYqBA')
         update.message.reply_text(
             'Готовы увидеть результаты жеребьевки (кто ходит первый)?',
             reply_markup=markup_key)
@@ -158,16 +176,24 @@ def get_first_move(update, context):
         update.message.reply_text(
             f'Первым ходит: {name}.', reply_markup=ReplyKeyboardRemove())
         if context.user_data.get('first_lot', 'Not found') == 1:
+            context.bot.send_sticker(update.effective_chat.id,
+                                     'CAACAgIAAxkBAAIJcWM_AdgJjL4ag0OfpJutr-9gGyv8AAKTAAP3AsgPJeWS_-k7iFUqBA')
             update.message.reply_text(
                 'Введите что-нибудь и отправте сообщение! БЫСТРО!')
             return BOT_PLAY
         elif context.user_data.get('first_lot', 'Not found') == 2:
+            context.bot.send_sticker(update.effective_chat.id,
+                                     'CAACAgIAAxkBAAIJdGM_AiiRHINOTjz0Fq1vxChu9dqxAAJvAAP3AsgP6TP9mweCjjIqBA')
             update.message.reply_text(
                 'Введите, сколько конфет будете брать.')
+            context.bot.send_sticker(update.effective_chat.id,
+                                     'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
             return USER_PLAY
     elif decision == NO:
         update.message.reply_text(
             'Я расстроен! Но Ваше решение принимаю... (Команда: /start для новой игры)', reply_markup=ReplyKeyboardRemove())
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJX2M_AAF2ecglXLM2wOmrFUruFCPONwACPQEAAjDUnREQ98oHcZKP7ioE')
         return ConversationHandler.END
 
 
@@ -189,8 +215,12 @@ def play_as_bot(update, context):
         step = 0
         update.message.reply_text(
             f'Извините, я наелся и пропущу 1 ход!')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJd2M_AoJ3Dvag7j4lVRhV4BPkuRYPAAJrAAP3AsgPPlPH7DgfmtMqBA')
         update.message.reply_text(
             'Введите, сколько конфет будете брать.')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
         return USER_PLAY
     else:
         if sum_total - 1 > game_move:
@@ -203,19 +233,24 @@ def play_as_bot(update, context):
     else:
         update.message.reply_text(
             f'Умный Бот пропустил ход. Ваша очередь!')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJcWM_AdgJjL4ag0OfpJutr-9gGyv8AAKTAAP3AsgPJeWS_-k7iFUqBA')
 
     sum_total -= int(step)
     context.user_data['sum_total'] = sum_total
     if sum_total == 1:
         update.message.reply_text(
             f'Умный Бот выиграл! Вы проиграли: Вам осталась всего 1 конфета.')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJemM_AzyV4r6P55c3aIhJHR8xdkURAAKUAAP3AsgPoua-568NrOgqBA')
         return ConversationHandler.END
     if sum_total > 1:
         update.message.reply_text(
             f'После хода Вашего противника Умного Бота осталось {sum_total} конфет(-а/-ы).')
     update.message.reply_text(
         'Введите, сколько конфет будете брать.')
-
+    context.bot.send_sticker(update.effective_chat.id,
+                             'CAACAgIAAxkBAAIJXGM_AAEajJr1qsTmVMOsaQICxcHLNgACuQAD9wLID5Ahqvg5d0bYKgQ')
     return USER_PLAY
 
 
@@ -234,6 +269,8 @@ def play_as_user(update, context):
     if step.isdigit() == False or int(step) < 1 or int(step) > game_move:
         update.message.reply_text(
             f'{user.first_name}, некорректный ход. Должно быть число от 1 до {game_move}.\nОтправьте /stop, если передумали играть, но в этом случае я расстроюсь.')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJZWM_AAHiUqDMmRvQyMOca102OwNqGAACSgADUomRIyleaTHC6cM1KgQ')
         return USER_PLAY
     sum_total -= int(step)
     context.user_data['sum_total'] = sum_total
@@ -241,17 +278,19 @@ def play_as_user(update, context):
         update.message.reply_text(
             f'После Вашего хода, {user.first_name}, осталось(-лись, -лась) {sum_total} конфет(-ы, -а).\nОтправьте /stop, если передумали играть, но в этом случае я расстроюсь.')
         update.message.reply_text(
-            'Введите что-нибудь и отправте сообщение! БЫСТРО!')
+            'Введите что-нибудь и отправьте сообщение! БЫСТРО!')
         return BOT_PLAY
     elif sum_total == 1:
         update.message.reply_text(
             f'После Вашего хода, {user.first_name}, осталась {sum_total} конфета.')
         update.message.reply_text(
             f'Вы выиграли! Боту "Умный Бот" досталась последняя конфета. Поздравляем, {user.first_name}! Для начала новой игры нажмите /start')
+        context.bot.send_sticker(update.effective_chat.id,
+                                 'CAACAgIAAxkBAAIJa2M_AXN31zjSnP4pDq_PJd4cxxu7AAJwDwACOj7BS9IRGlNhXSg3KgQ')
         return ConversationHandler.END
 
 
-def stop(update, _):
+def stop(update, context):
     # определяем пользователя
     user = update.message.from_user
     # Пишем в журнал о том, что пользователь прекращает разговор.
@@ -262,6 +301,8 @@ def stop(update, _):
         'Будет скучно - возвращайтесь (команда: /start)!',
         reply_markup=ReplyKeyboardRemove()
     )
+    context.bot.send_sticker(update.effective_chat.id,
+                             'CAACAgIAAxkBAAIJYmM_AAGr5dzxmzhrlAUwaYEkp1vSswACmgAD9wLID9HVBvL9etQ4KgQ')
     # Заканчиваем разговор.
     return ConversationHandler.END
 
